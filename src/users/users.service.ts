@@ -87,4 +87,11 @@ export class UsersService {
     });
     return refreshToken;
   }
+  async getOrCreateUser(body: CreateUserDto){
+    const user = await this.userHeapler.getUserByEmail(body.email);
+    if(user){
+      return user;
+    }
+    return this.createUser(body);
+  }
 }

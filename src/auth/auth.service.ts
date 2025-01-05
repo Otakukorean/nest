@@ -14,7 +14,7 @@ export class AuthService {
     private readonly userService: UsersService,
     private readonly configService: ConfigService,
   ) {}
-  async login(user: UserType, response: Response) {
+  async login(user: UserType, response: Response,redirect=false) {
     const expiresAccessToken = new Date();
     expiresAccessToken.setTime(
       expiresAccessToken.getTime() +
@@ -67,7 +67,11 @@ export class AuthService {
       secure: this.configService.get('NODE_ENV') === 'production',
       expires: expiresRefreshToken,
     });
-  }
+    if(redirect){
+      response.redirect('http://localhost:3000'); 
+
+      }
+    }
   async verifyUserRefreshToken(refreshToken: string, userId: string) {
     const token = await this.userService.getRefreshTokenByUser(userId);
     if (!token) {

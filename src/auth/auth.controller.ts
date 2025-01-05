@@ -8,6 +8,7 @@ import { Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -40,5 +41,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async user(@CurrentUser() user: UserType) {
     return user;
+  }
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  loginGoogle() {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleCallback(
+    @CurrentUser() user: UserType,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.authService.login(user, response, true);
   }
 }
