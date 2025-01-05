@@ -24,6 +24,3 @@ export class GoogleStrategy extends PassportStrategy(Strategy){
     }
 }
 
-
-// GOOGLE_CLIENT_ID=954328909253-gmico7g8v0jogvm1grq2khq6ctisqrev.apps.googleusercontent.com
-// GOOGLE_CLIENT_SECRET=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
