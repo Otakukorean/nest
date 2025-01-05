@@ -1,0 +1,8 @@
+# Connect to Supabase via connection pooling with Supavisor.
+DATABASE_URL="postgresql://postgres.oxaexbygovkwxiqosnue:Otakukorean2003@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Direct connection to the database. Used for migrations.
+DIRECT_URL="postgresql://postgres.oxaexbygovkwxiqosnue:Otakukorean2003@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+GITHUB_CLIENT_ID=Ov23lifGqwW0FabmTCXj
+GITHUB_SECRET=1da3c44b3d3d6aa058c1f9c40c831ea027aa55f1
+ENCRYPTION_KEY=1da3c44b3d3d6aa058c1f9c40c831ea027aa55f1
