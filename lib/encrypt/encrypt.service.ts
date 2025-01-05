@@ -1,20 +1,17 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import * as cryptojs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class Encrypt {
   async encrypt(text: string) {
-    const enText = cryptojs.AES.encrypt(
+    const enText =bcrypt.hashSync(
       text,
-      process.env.ENCRYPTION_KEY as string,
+      15
     ).toString();
     return enText;
   };
-  async decrypt(text: string) {
-    const decText = cryptojs.AES.decrypt(
-      text,
-      process.env.ENCRYPTION_KEY as string,
-    ).toString();
+  async decrypt(plainText: string,cipherText:string) {
+    const decText =bcrypt.compareSync(plainText,cipherText)
     return decText;
   };
 };
