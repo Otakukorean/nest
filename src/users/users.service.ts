@@ -12,6 +12,7 @@ import { LoginUserDto } from 'src/auth/dto/LoginUser.dto';
 import { UserChecking } from 'src/auth/helpers/userChecking.service';
 import { RefreshToken } from './types/refreshToken.types';
 import * as uuid from 'uuid';
+import { AGENTS } from '@prisma/client';
 @Injectable()
 export class UsersService {
   constructor(
@@ -19,7 +20,7 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly userHeapler: UserChecking,
   ) {}
-  async createUser(body: CreateUserDto) {
+  async createUser(body: CreateUserDto, provider?: AGENTS) {
     const ifExist = await this.userHeapler.getUserByEmail(body.email);
     if (ifExist) {
       return new BadRequestException('Something bad happened', {
@@ -27,14 +28,17 @@ export class UsersService {
         description: 'User With This Email is Already exist!',
       }).getResponse();
     }
-    const encryptPawssword = await this.crypto.encrypt(body.password);
+    const encryptPawssword = body.password
+      ? await this.crypto.encrypt(body.password)
+      : null;
     await this.prisma.user.create({
       data: {
         email: body.email,
         name: body.username,
-        password: encryptPawssword,
-        userAgent: 'LOCAL',
+        password: encryptPawssword || null,
         image: body.image,
+        userAgent: provider,
+        emailVerified: provider == 'LOCAL' ? false : true,
       },
     });
     return new HttpException('User Created Successfuly!', HttpStatus.CREATED);
@@ -69,7 +73,7 @@ export class UsersService {
     });
     const { refreshToken, tokenExpiresAt, userId } = token;
     const encryptToken = await this.crypto.encrypt(refreshToken);
-    const id = uuid.v4();
+    const id = await uuid.v4();
     await this.prisma.tokens.create({
       data: {
         refreshToken: encryptToken,
@@ -87,11 +91,11 @@ export class UsersService {
     });
     return refreshToken;
   }
-  async getOrCreateUser(body: CreateUserDto){
+  async getOrCreateUser(body: CreateUserDto, provider?: AGENTS) {
     const user = await this.userHeapler.getUserByEmail(body.email);
-    if(user){
+    if (user) {
       return user;
     }
-    return this.createUser(body);
+    return this.createUser(body, provider);
   }
 }
